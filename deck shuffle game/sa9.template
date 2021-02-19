@@ -1,0 +1,48 @@
+//003092073		Scott Jackson
+//This is the implementation file, where the functions declared in the
+//file "sa9.h" are implemented
+
+#include "llistTemplate.h"
+#include "sa9.h"
+#include "sa8.h"
+#include "sa7.h"
+#include <iostream>
+
+namespace pic10b{
+
+	//Default Constructor
+	template <typename T>
+	rowOfCards<T>::rowOfCards<T>(){}
+
+	template <typename T>
+	std::ostream& operator <<(std::ostream& os, rowOfCards<T>& r){
+	
+	const node<T> * cursor = r.last();
+	while(cursor!=head)
+	{
+		os<<cursor->val<<" ";
+		cursor=cursor->prev;
+	}
+
+	return os;
+}
+		
+		
+	//template <typename T>
+	//bool rowOfCards<T>::consolidate(){
+	
+	//if((source.last()->val)==((source.last()->prev)->val)){
+	//	source.erase(source.last()->prev);
+	//	return true;
+		
+		
+	//	}
+	
+	//}
+		
+	
+	}
+
+
+
+

@@ -1,0 +1,182 @@
+template<typename T>
+llist<T>::llist()
+{
+	head = NULL;
+	tail = NULL;
+}
+
+template<typename T>
+llist<T>::llist(const llist & the_list)
+{
+	head = NULL;
+	tail = NULL;
+
+	const node<T> * cursor = the_list.head;
+	while(cursor!=NULL)
+	{
+		insert(NULL,cursor->val);
+		cursor=cursor->next;
+	}
+}
+
+template<typename T>
+llist<T> & llist<T>::operator=(const llist & the_list)
+{
+	if(this == &the_list)
+		return *this;
+
+	clear();
+
+	const node<T> * cursor = the_list.head;
+	while(cursor!=NULL)
+	{
+		insert(NULL,cursor->val);
+		cursor=cursor->next;
+	}
+
+	return *this;
+}
+
+template<typename T>
+node<T> * llist<T>::find(const value_type & v,const size_type & which_one)
+{
+	size_type ct = 0;
+	node<T> * cursor = head;
+
+	while(cursor!=NULL && ct<which_one)
+	{
+		if(cursor->val == v)
+			++ct;
+
+		if(ct<which_one)
+			cursor = cursor->next;
+	}
+
+	return cursor;
+}
+
+template<typename T>
+node<T> * llist<T>::insert(node<T> * where,const value_type & v)
+{
+	node<T> * temp = new node<T>;
+	temp->val = v;
+	temp->next = where;
+
+	// empty list?
+	if(where==NULL && head==NULL)
+	{
+		head = temp;
+		tail = temp;
+		temp->prev = 0;
+	}
+
+	// at the tail?
+	else if(where==NULL)
+	{
+		tail->next = temp;
+		temp->prev = tail;
+		tail = temp;
+	}
+
+	// at the head?
+	else if(head==where)
+	{
+		where->prev = temp;
+		temp->prev = NULL;
+		head = temp;
+	}
+
+	// anywhere else
+	else
+	{
+		where->prev->next = temp;
+		temp->prev = where->prev;
+		where->prev = temp;
+	}
+
+	return temp;
+}
+
+template<typename T>
+node<T> * llist<T>::erase(node<T> * where)
+{
+	if(where==NULL)
+		where = tail;
+	
+	// list has size 1?
+	if(head==where && tail==where)
+	{
+		head = NULL;
+		tail = NULL;
+		delete where;
+
+		return NULL;
+	}
+
+	// deleting head
+	else if(head==where)
+	{
+		head = where->next;
+		where->next->prev = NULL;
+		delete where;
+
+		return head;
+	}
+
+	// deleting tail
+	else if(tail==where)
+	{
+		tail = where->prev;
+		where->prev->next = NULL;
+		delete where;
+
+		return tail;
+	}
+
+	// deleting some node in the middle
+	else
+	{
+		where->next->prev = where->prev;
+		where->prev->next = where->next;
+		node<T> * temp = where->next;
+		delete where;
+
+		return temp;
+	}
+}
+
+template<typename T>
+void llist<T>::clear()
+{
+	while(head!=NULL)
+		erase();
+}
+
+template<typename T>
+typename llist<T>::size_type llist<T>::size() const
+{
+	size_type ct = 0;
+
+	node<T> * cursor = head;
+	while(cursor!=NULL)
+	{
+		++ct;
+		cursor = cursor->next;
+	}
+
+	return ct;
+}
+
+template<typename T>
+std::ostream & operator<<(std::ostream & os,const llist<T> & the_list)
+{
+	const node<T> * cursor = the_list.begin();
+	while(cursor!=NULL)
+	{
+		os<<cursor->val<<" ";
+		cursor=cursor->next;
+	}
+
+	return os;
+}
+
